@@ -1,5 +1,6 @@
 import React from 'react';
 import { BUSINESS_CONFIG } from '../data/siteData';
+import heroImage from '../assets/hero-pharma.jpg';
 
 export default function Hero({ onNotify }) {
   const handleScrollTo = (e, targetId) => {
@@ -26,28 +27,28 @@ export default function Hero({ onNotify }) {
       <div className="container">
         <div className="hero-grid">
           
-          {/* LEFT / MOBILE TOP: EDITORIAL HERO CONTENT */}
+          {/* 1. EDITORIAL TEXT BLOCK (MOBILE: 1ST VIEWPORT CONTENT) */}
           <div className="hero-content-block">
             
-            {/* Editorial Heritage Tag */}
+            {/* Small Brand / Eyebrow Label */}
             <div className="hero-editorial-badge">
               <span className="pulse-dot"></span>
               <span>Est. 1970s • Ramanathapuram District, TN</span>
             </div>
 
-            {/* Main Headline with responsive natural wrapping */}
+            {/* Main Hero Heading */}
             <h1 className="hero-headline">
               50+ YEARS OF <br className="hero-br-desktop" />
               <span className="hero-headline-accent">PHARMACEUTICAL</span>{' '}
               <span className="hero-headline-gold">DISTRIBUTION</span>
             </h1>
 
-            {/* Supporting Editorial Message */}
+            {/* Short Description */}
             <p className="hero-lead-text">
               For over five decades, Vinayaga Agency has delivered trusted, high-availability pharmaceutical distribution to retail pharmacies, hospital dispensaries, and community clinics across Ramanathapuram District and surrounding regional supply corridors.
             </p>
 
-            {/* CTA Group */}
+            {/* Primary & Secondary CTA Group */}
             <div className="hero-cta-row">
               <a
                 href="#contact"
@@ -70,7 +71,7 @@ export default function Hero({ onNotify }) {
                 href={BUSINESS_CONFIG.whatsappBaseUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn btn-whatsapp btn-lg"
+                className="btn btn-whatsapp btn-lg hero-cta-whatsapp"
                 aria-label={`Direct WhatsApp Enquiry to ${BUSINESS_CONFIG.phoneDisplay}`}
                 onClick={() => onNotify && onNotify('Opening WhatsApp connection...')}
               >
@@ -81,29 +82,13 @@ export default function Hero({ onNotify }) {
               </a>
             </div>
 
-            {/* Trust Micro Indicators on Desktop */}
-            <div className="hero-trust-bar">
-              <div className="hero-trust-item">
-                <span className="hero-trust-bullet">✦</span>
-                <span>Scheduled Van Deliveries</span>
-              </div>
-              <div className="hero-trust-item">
-                <span className="hero-trust-bullet">✦</span>
-                <span>Branded & Generic WHO-GMP</span>
-              </div>
-              <div className="hero-trust-item">
-                <span className="hero-trust-bullet">✦</span>
-                <span>Paramakudi Central Hub</span>
-              </div>
-            </div>
-
           </div>
 
-          {/* RIGHT / MOBILE IN-FLOW: CINEMATIC VISUAL FRAME */}
+          {/* 2. DEDICATED HERO IMAGE CONTAINER (IN-FLOW, IMMEDIATELY AFTER CTAs ON MOBILE) */}
           <div className="hero-visual-frame">
             <div className="hero-image-wrapper">
               <img
-                src="/hero-pharma.jpg"
+                src={heroImage || '/hero-pharma.jpg'}
                 alt="Vinayaga Agency Pharmaceutical Distribution Logistics Operations"
                 className="hero-image-element"
                 width="640"
@@ -114,15 +99,31 @@ export default function Hero({ onNotify }) {
               
               {/* Bottom Caption Card */}
               <div className="hero-image-caption-card">
-                <div>
+                <div className="caption-text-group">
                   <div className="caption-meta-title">Regional B2B Fulfillment</div>
-                  <div className="caption-meta-sub">Paramakudi • Sathrakudi • Rameswaram • Mudukulathur • Abiramam</div>
+                  <div className="caption-meta-sub">Paramakudi • Ramanathapuram • Rameswaram • Mudukulathur</div>
                 </div>
                 <span className="status-pill status-pill-jade">
                   <span className="pulse-dot"></span>
                   <span>Active Routes</span>
                 </span>
               </div>
+            </div>
+          </div>
+
+          {/* 3. SUPPORTING TRUST INDICATORS (FOLLOWS HERO IMAGE ON MOBILE) */}
+          <div className="hero-trust-bar">
+            <div className="hero-trust-item">
+              <span className="hero-trust-bullet">✦</span>
+              <span>Scheduled Van Deliveries</span>
+            </div>
+            <div className="hero-trust-item">
+              <span className="hero-trust-bullet">✦</span>
+              <span>Branded & Generic WHO-GMP</span>
+            </div>
+            <div className="hero-trust-item">
+              <span className="hero-trust-bullet">✦</span>
+              <span>Paramakudi Central Hub</span>
             </div>
           </div>
 
