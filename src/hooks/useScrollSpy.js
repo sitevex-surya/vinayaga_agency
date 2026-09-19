@@ -7,10 +7,12 @@ import { useState, useEffect } from 'react';
  * @returns {string} - The currently active section ID
  */
 export function useScrollSpy(sectionIds, offset = 130) {
-  const [activeSection, setActiveSection] = useState(sectionIds[0] || 'home');
+  const [activeSection, setActiveSection] = useState(sectionIds[0] || 'about');
 
   useEffect(() => {
-    const handleScroll = () => {
+    let ticking = false;
+
+    const updateActiveSection = () => {
       const scrollPos = window.scrollY + offset;
 
       for (let i = sectionIds.length - 1; i >= 0; i--) {
@@ -25,10 +27,18 @@ export function useScrollSpy(sectionIds, offset = 130) {
           }
         }
       }
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateActiveSection);
+        ticking = true;
+      }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
+    updateActiveSection();
 
     return () => window.removeEventListener('scroll', handleScroll);
   }, [sectionIds, offset]);

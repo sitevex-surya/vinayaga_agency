@@ -5,7 +5,8 @@ import { useState, useEffect, useRef } from 'react';
  * @param {Object} options - IntersectionObserverInit options
  * @returns {[React.RefObject, boolean]}
  */
-export function useIntersection(options = { threshold: 0.1, rootMargin: '0px 0px -25px 0px' }) {
+export function useIntersection(options = {}) {
+  const { threshold = 0.15, rootMargin = '0px 0px -25px 0px' } = options;
   const [hasIntersected, setHasIntersected] = useState(false);
   const elementRef = useRef(null);
 
@@ -24,14 +25,14 @@ export function useIntersection(options = { threshold: 0.1, rootMargin: '0px 0px
         setHasIntersected(true);
         obs.unobserve(currentElement);
       }
-    }, options);
+    }, { threshold, rootMargin });
 
     observer.observe(currentElement);
 
     return () => {
       if (currentElement) observer.unobserve(currentElement);
     };
-  }, [options]);
+  }, [threshold, rootMargin]);
 
   return [elementRef, hasIntersected];
 }

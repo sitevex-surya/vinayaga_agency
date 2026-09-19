@@ -26,7 +26,7 @@ export default function Hero({ onNotify }) {
       <div className="container">
         <div className="hero-grid">
           
-          {/* LEFT: EDITORIAL HERO CONTENT */}
+          {/* LEFT / MOBILE TOP: EDITORIAL HERO CONTENT */}
           <div className="hero-content-block">
             
             {/* Editorial Heritage Tag */}
@@ -35,11 +35,11 @@ export default function Hero({ onNotify }) {
               <span>Est. 1970s • Ramanathapuram District, TN</span>
             </div>
 
-            {/* Main Headline */}
+            {/* Main Headline with responsive natural wrapping */}
             <h1 className="hero-headline">
-              50+ YEARS OF <br />
-              <span className="hero-headline-accent">PHARMACEUTICAL</span>
-              <span className="hero-headline-gold"> DISTRIBUTION</span>
+              50+ YEARS OF <br className="hero-br-desktop" />
+              <span className="hero-headline-accent">PHARMACEUTICAL</span>{' '}
+              <span className="hero-headline-gold">DISTRIBUTION</span>
             </h1>
 
             {/* Supporting Editorial Message */}
@@ -81,7 +81,7 @@ export default function Hero({ onNotify }) {
               </a>
             </div>
 
-            {/* Trust Micro Indicators */}
+            {/* Trust Micro Indicators on Desktop */}
             <div className="hero-trust-bar">
               <div className="hero-trust-item">
                 <span className="hero-trust-bullet">✦</span>
@@ -99,7 +99,7 @@ export default function Hero({ onNotify }) {
 
           </div>
 
-          {/* RIGHT: CINEMATIC VISUAL FRAME */}
+          {/* RIGHT / MOBILE IN-FLOW: CINEMATIC VISUAL FRAME */}
           <div className="hero-visual-frame">
             <div className="hero-image-wrapper">
               <img

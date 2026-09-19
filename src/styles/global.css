@@ -1,5 +1,6 @@
 /* ==========================================================================
-   VINAYAGA AGENCY - Global Foundations & Editorial Typography
+   VINAYAGA AGENCY - Global Foundations & Responsive Fluid Typography
+   Breakpoints: 1920px, 1440px, 1280px, 1024px, 768px, 430px, 390px, 360px
    ========================================================================== */
 
 *, *::before, *::after {
@@ -13,7 +14,7 @@ html {
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
   max-width: 100%;
-  overflow-x: clip;
+  overflow-x: hidden;
 }
 
 body {
@@ -24,15 +25,16 @@ body {
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  width: 100%;
   max-width: 100%;
-  overflow-x: clip;
+  overflow-x: hidden;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
 body.nav-open {
-  overflow: hidden;
+  overflow: hidden !important;
   touch-action: none;
 }
 
@@ -41,19 +43,26 @@ body.nav-open {
   flex-direction: column;
   min-height: 100vh;
   width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 main {
   flex: 1 0 auto;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
-/* Typography Hierarchy */
+/* Fluid Responsive Typography Hierarchy */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   color: var(--color-text-primary);
-  font-weight: 700;
-  line-height: 1.2;
+  font-weight: 800;
+  line-height: 1.18;
   letter-spacing: -0.025em;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 h1 {
@@ -77,6 +86,8 @@ h4 {
 p {
   color: var(--color-text-secondary);
   margin-bottom: 0;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 a {
@@ -85,9 +96,10 @@ a {
   transition: all var(--transition-fast);
 }
 
+/* Touch-Optimized Form Controls */
 button, input, select, textarea {
   font-family: inherit;
-  font-size: 0.95rem;
+  font-size: 1rem; /* 16px minimum on mobile prevents iOS auto-zoom */
 }
 
 img {
@@ -106,23 +118,24 @@ textarea:focus-visible {
   box-shadow: var(--ring-focus);
 }
 
-/* Containers */
+/* Fluid Layout Containers */
 .container {
-  width: min(100% - clamp(1.5rem, 5vw, 4rem), var(--max-width));
+  width: min(100% - clamp(1.25rem, 5vw, 4.5rem), var(--max-width));
   margin-inline: auto;
+  padding-inline: 0;
 }
 
 .container-narrow {
-  width: min(100% - clamp(1.5rem, 5vw, 4rem), var(--max-width-narrow));
+  width: min(100% - clamp(1.25rem, 5vw, 4.5rem), var(--max-width-narrow));
   margin-inline: auto;
 }
 
 .section-padding {
-  padding-block: clamp(4.5rem, 8vw, 7.5rem);
+  padding-block: clamp(3.75rem, 7vw, 7.5rem);
 }
 
 .section-padding-sm {
-  padding-block: clamp(3rem, 5vw, 4.5rem);
+  padding-block: clamp(2.5rem, 4.5vw, 4rem);
 }
 
 /* Section Backgrounds */
@@ -171,7 +184,8 @@ textarea:focus-visible {
 
 /* Editorial Section Header */
 .section-header {
-  margin-bottom: clamp(3rem, 5vw, 4.5rem);
+  margin-bottom: clamp(2.5rem, 4.5vw, 4rem);
+  width: 100%;
 }
 
 .section-header.text-center {
@@ -195,7 +209,8 @@ textarea:focus-visible {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-jade);
-  margin-bottom: 1rem;
+  margin-bottom: 0.85rem;
+  flex-wrap: wrap;
 }
 
 .bg-ink .editorial-tag,
@@ -214,7 +229,7 @@ textarea:focus-visible {
   font-weight: 800;
   color: var(--color-text-primary);
   line-height: 1.18;
-  margin-bottom: 1rem;
+  margin-bottom: 0.85rem;
 }
 
 .bg-ink .section-title,
@@ -238,20 +253,21 @@ textarea:focus-visible {
   margin-inline: auto;
 }
 
-/* Buttons - Editorial 2026 Style */
+/* Touch-Friendly Responsive Buttons */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.65rem;
-  padding: 0.85rem 1.75rem;
-  min-height: 48px;
-  border-radius: var(--radius-sm);
+  padding: 0.85rem 1.65rem;
+  min-height: 48px; /* 48px minimum touch target */
+  min-width: 44px;
+  border-radius: var(--radius-xs);
   font-family: var(--font-heading);
   font-weight: 700;
   font-size: 0.925rem;
   letter-spacing: 0.02em;
-  line-height: 1;
+  line-height: 1.2;
   cursor: pointer;
   border: 1px solid transparent;
   transition: all var(--transition-fast);
@@ -259,15 +275,19 @@ textarea:focus-visible {
   user-select: none;
   position: relative;
   text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .btn .btn-arrow {
   transition: transform var(--transition-fast);
   display: inline-block;
+  line-height: 1;
 }
 
-.btn:hover .btn-arrow {
-  transform: translate(3px, -3px);
+@media (hover: hover) {
+  .btn:hover .btn-arrow {
+    transform: translate(3px, -3px);
+  }
 }
 
 .btn:active {
@@ -282,11 +302,13 @@ textarea:focus-visible {
   box-shadow: 0 4px 14px rgba(22, 163, 148, 0.25);
 }
 
-.btn-primary:hover {
-  background-color: var(--color-jade-dark);
-  border-color: var(--color-jade-dark);
-  box-shadow: 0 6px 20px rgba(22, 163, 148, 0.4);
-  transform: translateY(-1px);
+@media (hover: hover) {
+  .btn-primary:hover {
+    background-color: var(--color-jade-dark);
+    border-color: var(--color-jade-dark);
+    box-shadow: 0 6px 20px rgba(22, 163, 148, 0.4);
+    transform: translateY(-1px);
+  }
 }
 
 /* Secondary Button on Dark Canvas */
@@ -297,11 +319,13 @@ textarea:focus-visible {
   backdrop-filter: blur(8px);
 }
 
-.btn-secondary:hover {
-  background-color: rgba(255, 255, 255, 0.08);
-  border-color: var(--color-champagne);
-  color: var(--color-champagne) !important;
-  transform: translateY(-1px);
+@media (hover: hover) {
+  .btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: var(--color-champagne);
+    color: var(--color-champagne) !important;
+    transform: translateY(-1px);
+  }
 }
 
 /* Secondary Button on Light Canvas */
@@ -313,14 +337,16 @@ textarea:focus-visible {
   border: 1px solid var(--color-border-medium);
 }
 
-.bg-warm .btn-secondary:hover,
-.bg-soft .btn-secondary:hover,
-.bg-surface .btn-secondary:hover {
-  background-color: var(--color-surface-pure);
-  border-color: var(--color-jade);
-  color: var(--color-jade) !important;
-  box-shadow: var(--shadow-sm);
-  transform: translateY(-1px);
+@media (hover: hover) {
+  .bg-warm .btn-secondary:hover,
+  .bg-soft .btn-secondary:hover,
+  .bg-surface .btn-secondary:hover {
+    background-color: var(--color-surface-pure);
+    border-color: var(--color-jade);
+    color: var(--color-jade) !important;
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-1px);
+  }
 }
 
 /* Dark Button on Light Canvas */
@@ -330,10 +356,12 @@ textarea:focus-visible {
   border-color: var(--color-ink);
 }
 
-.btn-dark:hover {
-  background-color: var(--color-graphite-light);
-  border-color: var(--color-graphite-light);
-  transform: translateY(-1px);
+@media (hover: hover) {
+  .btn-dark:hover {
+    background-color: var(--color-graphite-light);
+    border-color: var(--color-graphite-light);
+    transform: translateY(-1px);
+  }
 }
 
 /* Outline Button */
@@ -343,10 +371,12 @@ textarea:focus-visible {
   border: 1px solid var(--color-border-medium);
 }
 
-.btn-outline:hover {
-  border-color: var(--color-jade);
-  color: var(--color-jade);
-  background: var(--color-surface-pure);
+@media (hover: hover) {
+  .btn-outline:hover {
+    border-color: var(--color-jade);
+    color: var(--color-jade);
+    background: var(--color-surface-pure);
+  }
 }
 
 .bg-ink .btn-outline,
@@ -355,11 +385,13 @@ textarea:focus-visible {
   border-color: var(--color-graphite-border);
 }
 
-.bg-ink .btn-outline:hover,
-.bg-graphite .btn-outline:hover {
-  border-color: var(--color-champagne);
-  color: var(--color-champagne);
-  background: rgba(255, 255, 255, 0.05);
+@media (hover: hover) {
+  .bg-ink .btn-outline:hover,
+  .bg-graphite .btn-outline:hover {
+    border-color: var(--color-champagne);
+    color: var(--color-champagne);
+    background: rgba(255, 255, 255, 0.05);
+  }
 }
 
 /* WhatsApp Emerald Button */
@@ -370,11 +402,13 @@ textarea:focus-visible {
   box-shadow: 0 4px 16px rgba(31, 175, 107, 0.3);
 }
 
-.btn-whatsapp:hover {
-  background-color: #169359;
-  border-color: #169359;
-  box-shadow: 0 6px 22px rgba(31, 175, 107, 0.45);
-  transform: translateY(-1px);
+@media (hover: hover) {
+  .btn-whatsapp:hover {
+    background-color: #169359;
+    border-color: #169359;
+    box-shadow: 0 6px 22px rgba(31, 175, 107, 0.45);
+    transform: translateY(-1px);
+  }
 }
 
 /* Champagne Accent Button */
@@ -385,23 +419,25 @@ textarea:focus-visible {
   font-weight: 700;
 }
 
-.btn-champagne:hover {
-  background-color: var(--color-champagne-dark);
-  border-color: var(--color-champagne-dark);
-  transform: translateY(-1px);
+@media (hover: hover) {
+  .btn-champagne:hover {
+    background-color: var(--color-champagne-dark);
+    border-color: var(--color-champagne-dark);
+    transform: translateY(-1px);
+  }
 }
 
-/* Button Sizes */
+/* Button Sizing */
 .btn-sm {
   padding: 0.55rem 1.15rem;
-  min-height: 38px;
+  min-height: 42px;
   font-size: 0.84rem;
 }
 
 .btn-lg {
-  padding: 1rem 2.15rem;
-  min-height: 54px;
-  font-size: 1rem;
+  padding: 0.95rem 2rem;
+  min-height: 50px;
+  font-size: 0.975rem;
 }
 
 /* Fine Coordinate Grid Texture */
@@ -409,13 +445,6 @@ textarea:focus-visible {
   background-image: 
     linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-}
-
-.fine-grid-light {
-  background-image: 
-    linear-gradient(to right, rgba(10, 13, 15, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(10, 13, 15, 0.03) 1px, transparent 1px);
   background-size: 40px 40px;
 }
 
@@ -429,6 +458,7 @@ textarea:focus-visible {
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.03em;
+  white-space: nowrap;
 }
 
 .status-pill-jade {
@@ -456,6 +486,7 @@ textarea:focus-visible {
   background-color: var(--color-jade);
   box-shadow: 0 0 0 0 rgba(22, 163, 148, 0.7);
   animation: pulseStatus 2s infinite;
+  flex-shrink: 0;
 }
 
 @keyframes pulseStatus {

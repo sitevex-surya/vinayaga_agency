@@ -9,12 +9,22 @@ export function useBackToTop(threshold = 400) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
+    let ticking = false;
+
+    const checkVisibility = () => {
       setIsVisible(window.scrollY > threshold);
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(checkVisibility);
+        ticking = true;
+      }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
+    checkVisibility();
 
     return () => window.removeEventListener('scroll', handleScroll);
   }, [threshold]);
