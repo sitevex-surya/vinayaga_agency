@@ -57,6 +57,7 @@ const ROUTE_DATA = {
 
 // Lifecycle Initialization
 document.addEventListener('DOMContentLoaded', () => {
+  initInitialLoader();
   initNavbar();
   initStatsCounter();
   initCategoryFilters();
@@ -66,6 +67,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initContactForm();
   initModals();
   initScrollSpy();
+  initPageTransitions();
+  initScrollReveal();
 });
 
 /* ==========================================================================
@@ -79,47 +82,60 @@ function initNavbar() {
 
   // Sticky Header Shadow on Scroll
   window.addEventListener('scroll', () => {
-    if (window.scrollY > 40) {
+    if (window.scrollY > 30) {
       header.classList.add('scrolled');
     } else {
       header.classList.remove('scrolled');
     }
   }, { passive: true });
 
+  const closeMenu = () => {
+    if (navMenu && navMenu.classList.contains('active')) {
+      navMenu.classList.remove('active');
+      document.body.classList.remove('nav-open');
+      if (mobileToggle) mobileToggle.setAttribute('aria-expanded', 'false');
+    }
+  };
+
+  const openMenu = () => {
+    if (navMenu) {
+      navMenu.classList.add('active');
+      document.body.classList.add('nav-open');
+      if (mobileToggle) mobileToggle.setAttribute('aria-expanded', 'true');
+    }
+  };
+
   // Mobile Menu Toggle
   if (mobileToggle && navMenu) {
     mobileToggle.addEventListener('click', () => {
       const isCurrentlyActive = navMenu.classList.contains('active');
       if (isCurrentlyActive) {
-        navMenu.classList.remove('active');
-        mobileToggle.setAttribute('aria-expanded', 'false');
+        closeMenu();
       } else {
-        navMenu.classList.add('active');
-        mobileToggle.setAttribute('aria-expanded', 'true');
+        openMenu();
       }
     });
   }
 
   // Close Mobile Menu when a Link is Clicked
   navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-      if (navMenu && navMenu.classList.contains('active')) {
-        navMenu.classList.remove('active');
-        if (mobileToggle) mobileToggle.setAttribute('aria-expanded', 'false');
-      }
-    });
+    link.addEventListener('click', closeMenu);
   });
 
   // Close Mobile Menu on Escape key
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && navMenu && navMenu.classList.contains('active')) {
-      navMenu.classList.remove('active');
-      if (mobileToggle) {
-        mobileToggle.setAttribute('aria-expanded', 'false');
-        mobileToggle.focus();
-      }
+      closeMenu();
+      if (mobileToggle) mobileToggle.focus();
     }
   });
+
+  // Close menu on resize back to desktop
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 1024 && navMenu && navMenu.classList.contains('active')) {
+      closeMenu();
+    }
+  }, { passive: true });
 }
 
 /* ==========================================================================
@@ -175,8 +191,12 @@ function initCategoryFilters() {
 
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      filterBtns.forEach(b => b.classList.remove('active'));
+      filterBtns.forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
       btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
 
       const filter = btn.getAttribute('data-filter');
 
@@ -184,9 +204,11 @@ function initCategoryFilters() {
         const category = card.getAttribute('data-category');
         if (filter === 'all' || category === filter) {
           card.style.display = 'flex';
+          card.classList.remove('is-hidden');
           card.classList.add('fade-in');
         } else {
           card.style.display = 'none';
+          card.classList.add('is-hidden');
         }
       });
     });
@@ -205,6 +227,10 @@ function initCategoryCardTriggers() {
 
   productCards.forEach(card => {
     card.addEventListener('click', () => {
+      // Clear previous card selection and mark current
+      productCards.forEach(c => c.classList.remove('is-selected'));
+      card.classList.add('is-selected');
+
       const categoryName = card.getAttribute('data-cat-name') || card.querySelector('.cat-name')?.textContent?.trim();
       if (!categoryName) return;
 
@@ -229,7 +255,6 @@ function initCategoryCardTriggers() {
         for (let i = 0; i < builderCategorySelect.options.length; i++) {
           if (builderCategorySelect.options[i].text.toLowerCase().includes(categoryName.toLowerCase())) {
             builderCategorySelect.selectedIndex = i;
-            // Trigger preview update
             builderCategorySelect.dispatchEvent(new Event('change'));
             break;
           }
@@ -280,13 +305,48 @@ function initRouteLookup() {
   const lookupBtn = document.getElementById('lookupBtn');
   const lookupResult = document.getElementById('lookupResult');
   const nodeButtons = document.querySelectorAll('.map-nodes-container .node-item');
+  const routeCards = document.querySelectorAll('.route-cards-list .route-card');
+
+  function highlightMatchingRouteCard(val) {
+    routeCards.forEach(rc => rc.classList.remove('route-active-focus'));
+    if (!val) return;
+    
+    let targetIndex = -1;
+    if (val === 'sathrakudi' || val === 'rameswaram') {
+      targetIndex = 0; // Thursday Route
+    } else if (val === 'mudukulathur' || val === 'abiramam') {
+      targetIndex = 1; // Friday Route
+    } else if (val === 'paramakudi') {
+      targetIndex = 2; // Paramakudi Daily
+    } else {
+      targetIndex = 3; // Parcel
+    }
+
+    if (targetIndex >= 0 && routeCards[targetIndex]) {
+      routeCards[targetIndex].classList.add('route-active-focus');
+    }
+  }
 
   function renderRouteResult(val) {
     if (!lookupResult) return;
     if (!val) {
       lookupResult.style.display = 'none';
+      highlightMatchingRouteCard('');
       return;
     }
+
+    // Sync node button active state
+    nodeButtons.forEach(btn => {
+      if (btn.getAttribute('data-town') === val) {
+        btn.classList.add('active');
+        btn.setAttribute('aria-pressed', 'true');
+      } else {
+        btn.classList.remove('active');
+        btn.setAttribute('aria-pressed', 'false');
+      }
+    });
+
+    highlightMatchingRouteCard(val);
 
     let data;
     if (val === 'sathrakudi' || val === 'rameswaram') {
@@ -303,18 +363,20 @@ function initRouteLookup() {
     lookupResult.replaceChildren();
 
     const titleEl = document.createElement('strong');
-    titleEl.style.color = '#34D399';
-    titleEl.style.fontSize = '0.95rem';
+    titleEl.style.color = 'var(--accent-teal)';
+    titleEl.style.fontSize = '0.975rem';
     titleEl.style.display = 'block';
-    titleEl.style.marginBottom = '0.25rem';
+    titleEl.style.marginBottom = '0.35rem';
     titleEl.textContent = `📌 ${data.title} (${data.route})`;
 
     const covEl = document.createElement('div');
+    covEl.style.fontSize = '0.9rem';
+    covEl.style.color = '#F8FAFC';
     covEl.textContent = `Coverage: ${data.coverage}`;
 
     const metaEl = document.createElement('div');
-    metaEl.style.marginTop = '0.35rem';
-    metaEl.style.fontSize = '0.825rem';
+    metaEl.style.marginTop = '0.45rem';
+    metaEl.style.fontSize = '0.85rem';
     metaEl.style.color = '#CBD5E1';
     metaEl.textContent = `🚚 Method: ${data.type} • 🗓️ Schedule: ${data.frequency}`;
 
@@ -322,6 +384,9 @@ function initRouteLookup() {
     lookupResult.appendChild(covEl);
     lookupResult.appendChild(metaEl);
     lookupResult.style.display = 'block';
+    lookupResult.classList.remove('fade-in');
+    void lookupResult.offsetWidth; // Trigger reflow for animation
+    lookupResult.classList.add('fade-in');
   }
 
   if (lookupBtn && townSelect) {
@@ -643,8 +708,8 @@ function openHonestHandoffModal(data) {
   iconWrap.style.width = '64px';
   iconWrap.style.height = '64px';
   iconWrap.style.borderRadius = '50%';
-  iconWrap.style.background = '#D1FAE5';
-  iconWrap.style.color = '#059669';
+  iconWrap.style.background = 'var(--accent-light)';
+  iconWrap.style.color = 'var(--accent)';
   iconWrap.style.display = 'flex';
   iconWrap.style.alignItems = 'center';
   iconWrap.style.justifyContent = 'center';
@@ -656,13 +721,13 @@ function openHonestHandoffModal(data) {
   const title = document.createElement('h3');
   title.id = 'modalTitle';
   title.style.fontSize = '1.45rem';
-  title.style.color = '#0A2540';
+  title.style.color = 'var(--primary)';
   title.style.marginBottom = '0.5rem';
   title.textContent = 'Enquiry Ready for WhatsApp';
 
   // Subtitle
   const sub = document.createElement('p');
-  sub.style.color = '#475569';
+  sub.style.color = 'var(--text-body)';
   sub.style.fontSize = '0.95rem';
   sub.style.marginBottom = '1.25rem';
   sub.style.lineHeight = '1.55';
@@ -670,20 +735,20 @@ function openHonestHandoffModal(data) {
 
   // Notice Alert Box
   const noticeBox = document.createElement('div');
-  noticeBox.style.background = '#ECFDF5';
-  noticeBox.style.border = '1px solid #A7F3D0';
+  noticeBox.style.background = 'var(--accent-soft)';
+  noticeBox.style.border = '1px solid var(--accent-light)';
   noticeBox.style.borderRadius = '8px';
   noticeBox.style.padding = '0.85rem 1rem';
   noticeBox.style.fontSize = '0.875rem';
-  noticeBox.style.color = '#065F46';
+  noticeBox.style.color = 'var(--accent-hover)';
   noticeBox.style.marginBottom = '1.25rem';
   noticeBox.style.textAlign = 'left';
   noticeBox.innerHTML = '<strong>Important Step:</strong> Please tap <strong>"Send"</strong> inside WhatsApp to deliver your enquiry directly to our wholesale desk.';
 
   // Summary Card
   const summaryBox = document.createElement('div');
-  summaryBox.style.background = '#F8FAFC';
-  summaryBox.style.border = '1px solid #E2E8F0';
+  summaryBox.style.background = 'var(--surface-alt)';
+  summaryBox.style.border = '1px solid var(--border)';
   summaryBox.style.padding = '1rem';
   summaryBox.style.borderRadius = '8px';
   summaryBox.style.fontSize = '0.875rem';
@@ -704,11 +769,11 @@ function openHonestHandoffModal(data) {
     
     const strong = document.createElement('strong');
     strong.textContent = `${r.label}: `;
-    strong.style.color = '#0A2540';
+    strong.style.color = 'var(--primary)';
     
     const span = document.createElement('span');
     span.textContent = r.val;
-    span.style.color = '#334155';
+    span.style.color = 'var(--text-body)';
     
     rowDiv.appendChild(strong);
     rowDiv.appendChild(span);
@@ -733,8 +798,6 @@ function openHonestHandoffModal(data) {
   copyBtn.type = 'button';
   copyBtn.className = 'btn btn-secondary';
   copyBtn.style.width = '100%';
-  copyBtn.style.color = '#0A2540';
-  copyBtn.style.borderColor = '#CBD5E1';
   copyBtn.textContent = '📋 Copy Message Text';
   copyBtn.addEventListener('click', () => {
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -886,4 +949,165 @@ function initScrollSpy() {
       });
     }
   }, { passive: true });
+}
+
+/* ==========================================================================
+   12. Premium Brand Page Transition & Logo Loading Experience
+   ========================================================================== */
+function initPageTransitions() {
+  const overlay = document.getElementById('pageTransitionOverlay');
+  if (!overlay) return;
+
+  const internalLinks = document.querySelectorAll('a[href^="#"]');
+  let isTransitioning = false;
+
+  // Check if reduced motion is preferred
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function performTransition(targetId, e) {
+    if (isTransitioning) {
+      if (e) e.preventDefault();
+      return;
+    }
+
+    const cleanId = targetId.replace(/^#/, '');
+    const targetElement = document.getElementById(cleanId);
+    if (!targetElement) return;
+
+    if (e) e.preventDefault();
+    isTransitioning = true;
+
+    // If reduced motion, jump directly without full overlay animation
+    if (prefersReducedMotion) {
+      targetElement.scrollIntoView({ behavior: 'auto' });
+      history.pushState(null, '', targetId);
+      isTransitioning = false;
+      return;
+    }
+
+    // Trigger overlay entrance
+    overlay.classList.add('is-active');
+    document.body.classList.add('page-content-transitioning');
+
+    // Transition duration: 380ms (fast, premium, responsive)
+    setTimeout(() => {
+      // Scroll to target section
+      const headerOffset = 74;
+      const elementPosition = targetElement.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+      window.scrollTo({
+        top: Math.max(0, offsetPosition),
+        behavior: 'auto'
+      });
+
+      // Update URL hash smoothly
+      history.pushState(null, '', targetId);
+
+      // Trigger section entrance reveal
+      targetElement.classList.remove('section-entered');
+      void targetElement.offsetWidth;
+      targetElement.classList.add('section-entered');
+
+      // Stagger child reveals
+      const childCards = targetElement.querySelectorAll('.feature-card, .product-cat-card, .route-card, .vm-card, .process-step-card, .stat-card');
+      childCards.forEach((card, idx) => {
+        card.style.animationDelay = `${idx * 50}ms`;
+        card.classList.add('fade-in');
+      });
+
+      // Smooth exit
+      setTimeout(() => {
+        overlay.classList.remove('is-active');
+        document.body.classList.remove('page-content-transitioning');
+        isTransitioning = false;
+      }, 100);
+    }, 380);
+  }
+
+  internalLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      const href = link.getAttribute('href');
+      // Ignore empty hashes, WhatsApp, Tel, Mailto, or external links
+      if (!href || href === '#' || href.startsWith('tel:') || href.startsWith('mailto:') || href.startsWith('http') || link.getAttribute('target') === '_blank') {
+        return;
+      }
+
+      performTransition(href, e);
+    });
+  });
+
+  // Support Browser Back/Forward history buttons gracefully
+  window.addEventListener('popstate', () => {
+    const currentHash = window.location.hash || '#home';
+    const targetElement = document.getElementById(currentHash.replace(/^#/, ''));
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+}
+
+/* ==========================================================================
+   13. Scroll Reveal & Staggered Entrance Animations
+   ========================================================================== */
+function initScrollReveal() {
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReducedMotion) return;
+
+  const revealElements = document.querySelectorAll('.feature-card, .product-cat-card, .route-card, .vm-card, .process-step-card, .stat-card, .timeline-item, .contact-info-card, .contact-form-card, .builder-card');
+
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-revealed');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -30px 0px'
+  });
+
+  revealElements.forEach((el, index) => {
+    el.classList.add('reveal-item');
+    observer.observe(el);
+  });
+}
+
+/* ==========================================================================
+   14. Initial Website Open Brand Loading Experience
+   ========================================================================== */
+function initInitialLoader() {
+  const overlay = document.getElementById('pageTransitionOverlay');
+  if (!overlay) return;
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function dismissInitialLoader() {
+    overlay.classList.add('fade-out');
+    document.body.classList.add('homepage-loaded');
+
+    setTimeout(() => {
+      overlay.classList.remove('is-active', 'initial-loader', 'fade-out');
+    }, 450);
+  }
+
+  if (prefersReducedMotion) {
+    dismissInitialLoader();
+    return;
+  }
+
+  // Initial load duration: 900ms (optimal, elegant, prevents flash)
+  const initialDuration = 900;
+  
+  setTimeout(() => {
+    dismissInitialLoader();
+  }, initialDuration);
+
+  // Safety fallback: ensure loader is never stuck under any circumstances
+  setTimeout(() => {
+    if (overlay.classList.contains('initial-loader')) {
+      dismissInitialLoader();
+    }
+  }, 2000);
 }
