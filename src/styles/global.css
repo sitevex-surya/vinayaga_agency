@@ -1,0 +1,471 @@
+/* ==========================================================================
+   VINAYAGA AGENCY - Global Foundations & Editorial Typography
+   ========================================================================== */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--font-body-base);
+  color: var(--color-text-secondary);
+  background-color: var(--color-warm-white);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  max-width: 100%;
+  overflow-x: clip;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+body.nav-open {
+  overflow: hidden;
+  touch-action: none;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+/* Typography Hierarchy */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--color-text-primary);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+h1 {
+  font-size: var(--font-h1);
+  letter-spacing: -0.035em;
+}
+
+h2 {
+  font-size: var(--font-h2);
+  letter-spacing: -0.03em;
+}
+
+h3 {
+  font-size: var(--font-h3);
+}
+
+h4 {
+  font-size: var(--font-h4);
+}
+
+p {
+  color: var(--color-text-secondary);
+  margin-bottom: 0;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: all var(--transition-fast);
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Accessible Focus States */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: none;
+  box-shadow: var(--ring-focus);
+}
+
+/* Containers */
+.container {
+  width: min(100% - clamp(1.5rem, 5vw, 4rem), var(--max-width));
+  margin-inline: auto;
+}
+
+.container-narrow {
+  width: min(100% - clamp(1.5rem, 5vw, 4rem), var(--max-width-narrow));
+  margin-inline: auto;
+}
+
+.section-padding {
+  padding-block: clamp(4.5rem, 8vw, 7.5rem);
+}
+
+.section-padding-sm {
+  padding-block: clamp(3rem, 5vw, 4.5rem);
+}
+
+/* Section Backgrounds */
+.bg-ink {
+  background-color: var(--color-ink);
+  color: var(--color-text-inverse);
+  position: relative;
+}
+
+.bg-graphite {
+  background-color: var(--color-graphite);
+  color: var(--color-text-inverse);
+  position: relative;
+}
+
+.bg-warm {
+  background-color: var(--color-warm-white);
+  color: var(--color-text-primary);
+  position: relative;
+}
+
+.bg-soft {
+  background-color: var(--color-soft-grey);
+  color: var(--color-text-primary);
+  position: relative;
+}
+
+.bg-surface {
+  background-color: var(--color-surface-white);
+  color: var(--color-text-primary);
+  position: relative;
+}
+
+/* Section Dividers & Hairlines */
+.border-top-hairline {
+  border-top: 1px solid var(--color-border-light);
+}
+
+.border-bottom-hairline {
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.border-dark-hairline {
+  border-color: var(--color-graphite-border) !important;
+}
+
+/* Editorial Section Header */
+.section-header {
+  margin-bottom: clamp(3rem, 5vw, 4.5rem);
+}
+
+.section-header.text-center {
+  text-align: center;
+  max-width: 780px;
+  margin-inline: auto;
+}
+
+.section-header.text-left {
+  text-align: left;
+  max-width: 800px;
+}
+
+.editorial-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-heading);
+  font-size: var(--font-xs);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-jade);
+  margin-bottom: 1rem;
+}
+
+.bg-ink .editorial-tag,
+.bg-graphite .editorial-tag {
+  color: var(--color-champagne);
+}
+
+.editorial-tag-num {
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.725rem;
+}
+
+.section-title {
+  font-size: var(--font-h2);
+  font-weight: 800;
+  color: var(--color-text-primary);
+  line-height: 1.18;
+  margin-bottom: 1rem;
+}
+
+.bg-ink .section-title,
+.bg-graphite .section-title {
+  color: var(--color-text-inverse);
+}
+
+.section-description {
+  font-size: var(--font-body-lead);
+  color: var(--color-text-muted);
+  line-height: 1.65;
+  max-width: 660px;
+}
+
+.bg-ink .section-description,
+.bg-graphite .section-description {
+  color: var(--color-text-inverse-muted);
+}
+
+.section-header.text-center .section-description {
+  margin-inline: auto;
+}
+
+/* Buttons - Editorial 2026 Style */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 0.85rem 1.75rem;
+  min-height: 48px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.925rem;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  user-select: none;
+  position: relative;
+  text-decoration: none;
+}
+
+.btn .btn-arrow {
+  transition: transform var(--transition-fast);
+  display: inline-block;
+}
+
+.btn:hover .btn-arrow {
+  transform: translate(3px, -3px);
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+/* Primary Jade Button */
+.btn-primary {
+  background-color: var(--color-jade);
+  color: #FFFFFF !important;
+  border-color: var(--color-jade);
+  box-shadow: 0 4px 14px rgba(22, 163, 148, 0.25);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-jade-dark);
+  border-color: var(--color-jade-dark);
+  box-shadow: 0 6px 20px rgba(22, 163, 148, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Secondary Button on Dark Canvas */
+.btn-secondary {
+  background-color: transparent;
+  color: var(--color-text-inverse) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(8px);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: var(--color-champagne);
+  color: var(--color-champagne) !important;
+  transform: translateY(-1px);
+}
+
+/* Secondary Button on Light Canvas */
+.bg-warm .btn-secondary,
+.bg-soft .btn-secondary,
+.bg-surface .btn-secondary {
+  background-color: transparent;
+  color: var(--color-text-primary) !important;
+  border: 1px solid var(--color-border-medium);
+}
+
+.bg-warm .btn-secondary:hover,
+.bg-soft .btn-secondary:hover,
+.bg-surface .btn-secondary:hover {
+  background-color: var(--color-surface-pure);
+  border-color: var(--color-jade);
+  color: var(--color-jade) !important;
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+/* Dark Button on Light Canvas */
+.btn-dark {
+  background-color: var(--color-ink);
+  color: #FFFFFF !important;
+  border-color: var(--color-ink);
+}
+
+.btn-dark:hover {
+  background-color: var(--color-graphite-light);
+  border-color: var(--color-graphite-light);
+  transform: translateY(-1px);
+}
+
+/* Outline Button */
+.btn-outline {
+  background: transparent;
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-medium);
+}
+
+.btn-outline:hover {
+  border-color: var(--color-jade);
+  color: var(--color-jade);
+  background: var(--color-surface-pure);
+}
+
+.bg-ink .btn-outline,
+.bg-graphite .btn-outline {
+  color: var(--color-text-inverse);
+  border-color: var(--color-graphite-border);
+}
+
+.bg-ink .btn-outline:hover,
+.bg-graphite .btn-outline:hover {
+  border-color: var(--color-champagne);
+  color: var(--color-champagne);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* WhatsApp Emerald Button */
+.btn-whatsapp {
+  background-color: #1FAF6B;
+  color: #FFFFFF !important;
+  border-color: #1FAF6B;
+  box-shadow: 0 4px 16px rgba(31, 175, 107, 0.3);
+}
+
+.btn-whatsapp:hover {
+  background-color: #169359;
+  border-color: #169359;
+  box-shadow: 0 6px 22px rgba(31, 175, 107, 0.45);
+  transform: translateY(-1px);
+}
+
+/* Champagne Accent Button */
+.btn-champagne {
+  background-color: var(--color-champagne);
+  color: var(--color-ink) !important;
+  border-color: var(--color-champagne);
+  font-weight: 700;
+}
+
+.btn-champagne:hover {
+  background-color: var(--color-champagne-dark);
+  border-color: var(--color-champagne-dark);
+  transform: translateY(-1px);
+}
+
+/* Button Sizes */
+.btn-sm {
+  padding: 0.55rem 1.15rem;
+  min-height: 38px;
+  font-size: 0.84rem;
+}
+
+.btn-lg {
+  padding: 1rem 2.15rem;
+  min-height: 54px;
+  font-size: 1rem;
+}
+
+/* Fine Coordinate Grid Texture */
+.fine-grid-overlay {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.fine-grid-light {
+  background-image: 
+    linear-gradient(to right, rgba(10, 13, 15, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(10, 13, 15, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Subtle Status Pills */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.status-pill-jade {
+  background-color: var(--color-jade-soft);
+  color: var(--color-jade);
+  border: 1px solid var(--color-border-jade);
+}
+
+.status-pill-champagne {
+  background-color: var(--color-champagne-soft);
+  color: var(--color-champagne-dark);
+  border: 1px solid rgba(216, 195, 154, 0.3);
+}
+
+.status-pill-dark {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: var(--color-text-inverse-muted);
+  border: 1px solid var(--color-graphite-border);
+}
+
+.pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-jade);
+  box-shadow: 0 0 0 0 rgba(22, 163, 148, 0.7);
+  animation: pulseStatus 2s infinite;
+}
+
+@keyframes pulseStatus {
+  0% {
+    box-shadow: 0 0 0 0 rgba(22, 163, 148, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(22, 163, 148, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(22, 163, 148, 0);
+  }
+}

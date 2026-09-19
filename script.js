@@ -58,6 +58,8 @@ const ROUTE_DATA = {
 // Lifecycle Initialization
 document.addEventListener('DOMContentLoaded', () => {
   initInitialLoader();
+  initScrollProgress();
+  initBackToTop();
   initNavbar();
   initStatsCounter();
   initCategoryFilters();
@@ -72,7 +74,47 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ==========================================================================
-   1. Header & Navigation Logic
+   1. Scroll Progress Bar
+   ========================================================================== */
+function initScrollProgress() {
+  const progressBar = document.getElementById('scrollProgressBar');
+  if (!progressBar) return;
+
+  const updateProgress = () => {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = `${Math.min(100, Math.max(0, scrollPercent))}%`;
+  };
+
+  window.addEventListener('scroll', updateProgress, { passive: true });
+}
+
+/* ==========================================================================
+   2. Floating Back-to-Top Button
+   ========================================================================== */
+function initBackToTop() {
+  const backToTopBtn = document.getElementById('backToTopBtn');
+  if (!backToTopBtn) return;
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 400) {
+      backToTopBtn.classList.add('is-visible');
+    } else {
+      backToTopBtn.classList.remove('is-visible');
+    }
+  }, { passive: true });
+
+  backToTopBtn.addEventListener('click', () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+}
+
+/* ==========================================================================
+   3. Header & Navigation Logic
    ========================================================================== */
 function initNavbar() {
   const header = document.getElementById('header');
@@ -80,12 +122,12 @@ function initNavbar() {
   const navMenu = document.getElementById('navMenu');
   const navLinks = document.querySelectorAll('.nav-link');
 
-  // Sticky Header Shadow on Scroll
+  // Sticky Header Shadow and Height Transition on Scroll
   window.addEventListener('scroll', () => {
-    if (window.scrollY > 30) {
-      header.classList.add('scrolled');
+    if (window.scrollY > 25) {
+      header?.classList.add('scrolled');
     } else {
-      header.classList.remove('scrolled');
+      header?.classList.remove('scrolled');
     }
   }, { passive: true });
 
@@ -139,7 +181,7 @@ function initNavbar() {
 }
 
 /* ==========================================================================
-   2. Animated Statistics Counter
+   4. Animated Statistics Counter
    ========================================================================== */
 function initStatsCounter() {
   const statNumbers = document.querySelectorAll('.stat-number[data-count]');
@@ -157,8 +199,8 @@ function initStatsCounter() {
           if (isNaN(target)) return;
 
           let current = 0;
-          const duration = 1600; // ms
-          const stepTime = 25; // ms
+          const duration = 1500;
+          const stepTime = 25;
           const totalSteps = duration / stepTime;
           const increment = Math.max(1, Math.ceil(target / totalSteps));
 
@@ -174,7 +216,7 @@ function initStatsCounter() {
         });
       }
     });
-  }, { threshold: 0.3 });
+  }, { threshold: 0.25 });
 
   const statsSection = document.getElementById('statsSection');
   if (statsSection) {
@@ -183,7 +225,7 @@ function initStatsCounter() {
 }
 
 /* ==========================================================================
-   3. Product Category Filters
+   5. Product Category Filters
    ========================================================================== */
 function initCategoryFilters() {
   const filterBtns = document.querySelectorAll('.filter-btn');
@@ -205,7 +247,6 @@ function initCategoryFilters() {
         if (filter === 'all' || category === filter) {
           card.style.display = 'flex';
           card.classList.remove('is-hidden');
-          card.classList.add('fade-in');
         } else {
           card.style.display = 'none';
           card.classList.add('is-hidden');
@@ -216,7 +257,7 @@ function initCategoryFilters() {
 }
 
 /* ==========================================================================
-   4. Interactive Category Card Triggers
+   6. Interactive Category Card Triggers
    ========================================================================== */
 function initCategoryCardTriggers() {
   const productCards = document.querySelectorAll('.product-cat-card');
@@ -226,15 +267,14 @@ function initCategoryCardTriggers() {
   const contactNameInput = document.getElementById('contactName');
 
   productCards.forEach(card => {
-    card.addEventListener('click', () => {
-      // Clear previous card selection and mark current
+    const handleCardSelection = () => {
       productCards.forEach(c => c.classList.remove('is-selected'));
       card.classList.add('is-selected');
 
       const categoryName = card.getAttribute('data-cat-name') || card.querySelector('.cat-name')?.textContent?.trim();
       if (!categoryName) return;
 
-      // Match with Contact Form dropdown if matching option exists
+      // Match with Contact Form dropdown
       if (reqCategorySelect) {
         let matched = false;
         for (let i = 0; i < reqCategorySelect.options.length; i++) {
@@ -250,7 +290,7 @@ function initCategoryCardTriggers() {
         }
       }
 
-      // Also match builder select if available
+      // Match builder select if available
       if (builderCategorySelect) {
         for (let i = 0; i < builderCategorySelect.options.length; i++) {
           if (builderCategorySelect.options[i].text.toLowerCase().includes(categoryName.toLowerCase())) {
@@ -261,7 +301,7 @@ function initCategoryCardTriggers() {
         }
       }
 
-      // Smooth scroll to contact form and set focus
+      // Smooth scroll to contact section
       if (contactSection) {
         contactSection.scrollIntoView({ behavior: 'smooth' });
         showToast(`Selected "${categoryName}". Fill the enquiry form below.`);
@@ -269,11 +309,19 @@ function initCategoryCardTriggers() {
           setTimeout(() => contactNameInput.focus(), 600);
         }
       }
+    };
+
+    card.addEventListener('click', handleCardSelection);
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        handleCardSelection();
+      }
     });
   });
 }
 
-// Global helper for backwards compatibility
+// Global helper for backward compatibility
 window.openCategoryModal = function(categoryName) {
   const reqCategorySelect = document.getElementById('contactRequirement');
   const contactSection = document.getElementById('contact');
@@ -298,7 +346,7 @@ window.openCategoryModal = function(categoryName) {
 };
 
 /* ==========================================================================
-   5. Interactive Delivery Route & Town Checker
+   7. Interactive Delivery Route & Town Checker
    ========================================================================== */
 function initRouteLookup() {
   const townSelect = document.getElementById('townSelect');
@@ -359,24 +407,23 @@ function initRouteLookup() {
       data = ROUTE_DATA.other;
     }
 
-    // Safely build DOM nodes to prevent XSS
     lookupResult.replaceChildren();
 
     const titleEl = document.createElement('strong');
-    titleEl.style.color = 'var(--accent-teal)';
-    titleEl.style.fontSize = '0.975rem';
+    titleEl.style.color = '#2DD4BF';
+    titleEl.style.fontSize = '0.95rem';
     titleEl.style.display = 'block';
     titleEl.style.marginBottom = '0.35rem';
     titleEl.textContent = `📌 ${data.title} (${data.route})`;
 
     const covEl = document.createElement('div');
-    covEl.style.fontSize = '0.9rem';
+    covEl.style.fontSize = '0.875rem';
     covEl.style.color = '#F8FAFC';
     covEl.textContent = `Coverage: ${data.coverage}`;
 
     const metaEl = document.createElement('div');
-    metaEl.style.marginTop = '0.45rem';
-    metaEl.style.fontSize = '0.85rem';
+    metaEl.style.marginTop = '0.4rem';
+    metaEl.style.fontSize = '0.825rem';
     metaEl.style.color = '#CBD5E1';
     metaEl.textContent = `🚚 Method: ${data.type} • 🗓️ Schedule: ${data.frequency}`;
 
@@ -384,9 +431,6 @@ function initRouteLookup() {
     lookupResult.appendChild(covEl);
     lookupResult.appendChild(metaEl);
     lookupResult.style.display = 'block';
-    lookupResult.classList.remove('fade-in');
-    void lookupResult.offsetWidth; // Trigger reflow for animation
-    lookupResult.classList.add('fade-in');
   }
 
   if (lookupBtn && townSelect) {
@@ -411,7 +455,7 @@ function initRouteLookup() {
 }
 
 /* ==========================================================================
-   6. Stock Requirement Builder Tool (B2B Utility)
+   8. Stock Requirement Builder Tool (B2B Utility)
    ========================================================================== */
 function initRequirementBuilder() {
   const pharmacyName = document.getElementById('reqPharmacy');
@@ -473,7 +517,7 @@ function initRequirementBuilder() {
 }
 
 /* ==========================================================================
-   7. Customer Contact Form & WhatsApp Handoff Flow
+   9. Customer Contact Form & WhatsApp Handoff Flow
    ========================================================================== */
 function normalizeIndianPhone(input) {
   if (!input) return null;
@@ -493,7 +537,7 @@ function normalizeIndianPhone(input) {
 }
 
 function isValidEmail(email) {
-  if (!email) return true; // Optional field
+  if (!email) return true;
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 }
 
@@ -544,7 +588,6 @@ function initContactForm() {
 
     // Anti-spam Honeypot Check
     if (hpInput && hpInput.value.trim() !== '') {
-      // Bot detected - silently ignore
       return;
     }
 
@@ -651,14 +694,12 @@ Vinayaga Agency Website`;
       if (spanEl) spanEl.textContent = 'Preparing WhatsApp Enquiry...';
     }
 
-    // Open WhatsApp in a new tab
     try {
       window.open(targetWhatsAppUrl, '_blank', 'noopener,noreferrer');
     } catch (err) {
-      // Handled via fallback modal
+      // Handled via modal
     }
 
-    // Show honest confirmation handoff modal
     setTimeout(() => {
       openHonestHandoffModal({
         name,
@@ -672,7 +713,6 @@ Vinayaga Agency Website`;
         rawMessage: whatsappMessage
       });
 
-      // Reset form and UI state
       contactForm.reset();
       document.querySelectorAll('.form-group').forEach(g => {
         g.classList.remove('has-error', 'has-success');
@@ -689,14 +729,13 @@ Vinayaga Agency Website`;
 }
 
 /* ==========================================================================
-   8. Honest WhatsApp Handoff Modal System
+   10. WhatsApp Handoff Modal System
    ========================================================================== */
 function openHonestHandoffModal(data) {
   const modal = document.getElementById('successModal');
   const modalContent = document.getElementById('successModalContent');
   if (!modal || !modalContent) return;
 
-  // Build clean DOM tree safely without raw innerHTML interpolation of user input
   modalContent.replaceChildren();
 
   const container = document.createElement('div');
@@ -705,31 +744,31 @@ function openHonestHandoffModal(data) {
 
   // Icon
   const iconWrap = document.createElement('div');
-  iconWrap.style.width = '64px';
-  iconWrap.style.height = '64px';
+  iconWrap.style.width = '58px';
+  iconWrap.style.height = '58px';
   iconWrap.style.borderRadius = '50%';
   iconWrap.style.background = 'var(--accent-light)';
   iconWrap.style.color = 'var(--accent)';
   iconWrap.style.display = 'flex';
   iconWrap.style.alignItems = 'center';
   iconWrap.style.justifyContent = 'center';
-  iconWrap.style.margin = '0 auto 1.25rem auto';
-  iconWrap.style.fontSize = '2rem';
+  iconWrap.style.margin = '0 auto 1.15rem auto';
+  iconWrap.style.fontSize = '1.75rem';
   iconWrap.textContent = '✓';
 
   // Title
   const title = document.createElement('h3');
   title.id = 'modalTitle';
-  title.style.fontSize = '1.45rem';
+  title.style.fontSize = '1.35rem';
   title.style.color = 'var(--primary)';
-  title.style.marginBottom = '0.5rem';
+  title.style.marginBottom = '0.4rem';
   title.textContent = 'Enquiry Ready for WhatsApp';
 
   // Subtitle
   const sub = document.createElement('p');
   sub.style.color = 'var(--text-body)';
-  sub.style.fontSize = '0.95rem';
-  sub.style.marginBottom = '1.25rem';
+  sub.style.fontSize = '0.925rem';
+  sub.style.marginBottom = '1.15rem';
   sub.style.lineHeight = '1.55';
   sub.textContent = 'Your stock requirement has been compiled for Vinayaga Agency (+91 9342702360). WhatsApp has been opened in a new tab.';
 
@@ -738,22 +777,22 @@ function openHonestHandoffModal(data) {
   noticeBox.style.background = 'var(--accent-soft)';
   noticeBox.style.border = '1px solid var(--accent-light)';
   noticeBox.style.borderRadius = '8px';
-  noticeBox.style.padding = '0.85rem 1rem';
-  noticeBox.style.fontSize = '0.875rem';
+  noticeBox.style.padding = '0.8rem 1rem';
+  noticeBox.style.fontSize = '0.85rem';
   noticeBox.style.color = 'var(--accent-hover)';
-  noticeBox.style.marginBottom = '1.25rem';
+  noticeBox.style.marginBottom = '1.15rem';
   noticeBox.style.textAlign = 'left';
-  noticeBox.innerHTML = '<strong>Important Step:</strong> Please tap <strong>"Send"</strong> inside WhatsApp to deliver your enquiry directly to our wholesale desk.';
+  noticeBox.innerHTML = '<strong>Important:</strong> Please tap <strong>"Send"</strong> inside WhatsApp to deliver your enquiry directly to our wholesale desk.';
 
   // Summary Card
   const summaryBox = document.createElement('div');
   summaryBox.style.background = 'var(--surface-alt)';
   summaryBox.style.border = '1px solid var(--border)';
-  summaryBox.style.padding = '1rem';
+  summaryBox.style.padding = '0.9rem 1rem';
   summaryBox.style.borderRadius = '8px';
-  summaryBox.style.fontSize = '0.875rem';
+  summaryBox.style.fontSize = '0.85rem';
   summaryBox.style.textAlign = 'left';
-  summaryBox.style.marginBottom = '1.5rem';
+  summaryBox.style.marginBottom = '1.35rem';
 
   const rows = [
     { label: 'Contact Person', val: data.name },
@@ -765,7 +804,7 @@ function openHonestHandoffModal(data) {
 
   rows.forEach(r => {
     const rowDiv = document.createElement('div');
-    rowDiv.style.marginBottom = '0.35rem';
+    rowDiv.style.marginBottom = '0.3rem';
     
     const strong = document.createElement('strong');
     strong.textContent = `${r.label}: `;
@@ -789,7 +828,7 @@ function openHonestHandoffModal(data) {
   waBtn.href = data.whatsappUrl;
   waBtn.target = '_blank';
   waBtn.rel = 'noopener noreferrer';
-  waBtn.className = 'btn btn-whatsapp';
+  waBtn.className = 'btn btn-primary';
   waBtn.style.width = '100%';
   waBtn.textContent = '💬 Open WhatsApp Enquiry';
 
@@ -832,12 +871,11 @@ function openHonestHandoffModal(data) {
   modalContent.appendChild(container);
   modal.classList.add('active');
 
-  // Focus the primary button in modal
   setTimeout(() => waBtn.focus(), 100);
 }
 
 /* ==========================================================================
-   9. Modal Control System
+   11. Modal Control System
    ========================================================================== */
 function initModals() {
   const modalOverlays = document.querySelectorAll('.modal-overlay');
@@ -869,7 +907,7 @@ function initModals() {
 }
 
 /* ==========================================================================
-   10. Toast Notification & Copy Fallback Utilities
+   12. Toast Notification & Copy Fallback Utilities
    ========================================================================== */
 function showToast(message) {
   let toast = document.getElementById('toastNotification');
@@ -922,7 +960,7 @@ function fallbackCopyText(text) {
 }
 
 /* ==========================================================================
-   11. ScrollSpy for Active Navigation Link Highlighting
+   13. ScrollSpy for Active Navigation Link Highlighting
    ========================================================================== */
 function initScrollSpy() {
   const sections = document.querySelectorAll('section[id]');
@@ -952,103 +990,39 @@ function initScrollSpy() {
 }
 
 /* ==========================================================================
-   12. Premium Brand Page Transition & Logo Loading Experience
+   14. Smooth Hash Navigation Transitions
    ========================================================================== */
 function initPageTransitions() {
-  const overlay = document.getElementById('pageTransitionOverlay');
-  if (!overlay) return;
-
   const internalLinks = document.querySelectorAll('a[href^="#"]');
-  let isTransitioning = false;
-
-  // Check if reduced motion is preferred
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  function performTransition(targetId, e) {
-    if (isTransitioning) {
-      if (e) e.preventDefault();
-      return;
-    }
-
-    const cleanId = targetId.replace(/^#/, '');
-    const targetElement = document.getElementById(cleanId);
-    if (!targetElement) return;
-
-    if (e) e.preventDefault();
-    isTransitioning = true;
-
-    // If reduced motion, jump directly without full overlay animation
-    if (prefersReducedMotion) {
-      targetElement.scrollIntoView({ behavior: 'auto' });
-      history.pushState(null, '', targetId);
-      isTransitioning = false;
-      return;
-    }
-
-    // Trigger overlay entrance
-    overlay.classList.add('is-active');
-    document.body.classList.add('page-content-transitioning');
-
-    // Transition duration: 380ms (fast, premium, responsive)
-    setTimeout(() => {
-      // Scroll to target section
-      const headerOffset = 74;
-      const elementPosition = targetElement.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-      window.scrollTo({
-        top: Math.max(0, offsetPosition),
-        behavior: 'auto'
-      });
-
-      // Update URL hash smoothly
-      history.pushState(null, '', targetId);
-
-      // Trigger section entrance reveal
-      targetElement.classList.remove('section-entered');
-      void targetElement.offsetWidth;
-      targetElement.classList.add('section-entered');
-
-      // Stagger child reveals
-      const childCards = targetElement.querySelectorAll('.feature-card, .product-cat-card, .route-card, .vm-card, .process-step-card, .stat-card');
-      childCards.forEach((card, idx) => {
-        card.style.animationDelay = `${idx * 50}ms`;
-        card.classList.add('fade-in');
-      });
-
-      // Smooth exit
-      setTimeout(() => {
-        overlay.classList.remove('is-active');
-        document.body.classList.remove('page-content-transitioning');
-        isTransitioning = false;
-      }, 100);
-    }, 380);
-  }
 
   internalLinks.forEach(link => {
     link.addEventListener('click', (e) => {
       const href = link.getAttribute('href');
-      // Ignore empty hashes, WhatsApp, Tel, Mailto, or external links
       if (!href || href === '#' || href.startsWith('tel:') || href.startsWith('mailto:') || href.startsWith('http') || link.getAttribute('target') === '_blank') {
         return;
       }
 
-      performTransition(href, e);
-    });
-  });
+      const targetId = href.replace(/^#/, '');
+      const targetElement = document.getElementById(targetId);
+      if (targetElement) {
+        e.preventDefault();
+        const headerOffset = 70;
+        const elementPosition = targetElement.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
-  // Support Browser Back/Forward history buttons gracefully
-  window.addEventListener('popstate', () => {
-    const currentHash = window.location.hash || '#home';
-    const targetElement = document.getElementById(currentHash.replace(/^#/, ''));
-    if (targetElement) {
-      targetElement.scrollIntoView({ behavior: 'smooth' });
-    }
+        window.scrollTo({
+          top: Math.max(0, offsetPosition),
+          behavior: 'smooth'
+        });
+
+        history.pushState(null, '', href);
+      }
+    });
   });
 }
 
 /* ==========================================================================
-   13. Scroll Reveal & Staggered Entrance Animations
+   15. Scroll Reveal with IntersectionObserver
    ========================================================================== */
 function initScrollReveal() {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1065,17 +1039,17 @@ function initScrollReveal() {
     });
   }, {
     threshold: 0.1,
-    rootMargin: '0px 0px -30px 0px'
+    rootMargin: '0px 0px -25px 0px'
   });
 
-  revealElements.forEach((el, index) => {
+  revealElements.forEach(el => {
     el.classList.add('reveal-item');
     observer.observe(el);
   });
 }
 
 /* ==========================================================================
-   14. Initial Website Open Brand Loading Experience
+   16. Initial Brand Loader
    ========================================================================== */
 function initInitialLoader() {
   const overlay = document.getElementById('pageTransitionOverlay');
@@ -1097,17 +1071,13 @@ function initInitialLoader() {
     return;
   }
 
-  // Initial load duration: 900ms (optimal, elegant, prevents flash)
-  const initialDuration = 900;
-  
   setTimeout(() => {
     dismissInitialLoader();
-  }, initialDuration);
+  }, 750);
 
-  // Safety fallback: ensure loader is never stuck under any circumstances
   setTimeout(() => {
     if (overlay.classList.contains('initial-loader')) {
       dismissInitialLoader();
     }
-  }, 2000);
+  }, 1800);
 }

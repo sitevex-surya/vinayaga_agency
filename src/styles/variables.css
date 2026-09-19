@@ -1,0 +1,101 @@
+/* ==========================================================================
+   VINAYAGA AGENCY - 2026 Executive Pharmaceutical Design Tokens
+   Theme: Classic Heritage × Premium Pharmaceutical × Modern Digital Precision
+   ========================================================================== */
+
+:root {
+  /* Primary Foundation (Deep Ink & Graphite) */
+  --color-ink: #0A0D0F;
+  --color-graphite: #11161A;
+  --color-graphite-card: #161D22;
+  --color-graphite-light: #1E272E;
+  --color-graphite-border: rgba(255, 255, 255, 0.08);
+
+  /* Pharmaceutical Jade Accents */
+  --color-jade: #16A394;
+  --color-jade-dark: #087C72;
+  --color-jade-deep: #05554E;
+  --color-jade-light: #E7F6F4;
+  --color-jade-soft: rgba(22, 163, 148, 0.12);
+  --color-jade-glow: rgba(22, 163, 148, 0.25);
+
+  /* Heritage Champagne Gold Accents */
+  --color-champagne: #D8C39A;
+  --color-champagne-light: #F7F3E9;
+  --color-champagne-dark: #B89E6C;
+  --color-champagne-soft: rgba(216, 195, 154, 0.14);
+
+  /* Architectural Light Surfaces */
+  --color-warm-white: #F5F4EF;
+  --color-soft-grey: #E9ECE8;
+  --color-surface-white: #FAF9F5;
+  --color-surface-pure: #FFFFFF;
+  --color-surface-hover: #F0F3EF;
+
+  /* Typographic Contrast Hierarchy */
+  --color-text-primary: #0A0D0F;
+  --color-text-secondary: #3D4850;
+  --color-text-muted: #6B7983;
+  --color-text-light: #9AA7B0;
+  --color-text-inverse: #FAF9F5;
+  --color-text-inverse-muted: #A3B1BC;
+  --color-text-champagne: #D8C39A;
+  --color-text-jade: #16A394;
+
+  /* Precision Hairline Borders */
+  --color-border-light: rgba(10, 13, 15, 0.08);
+  --color-border-medium: rgba(10, 13, 15, 0.14);
+  --color-border-subtle: rgba(10, 13, 15, 0.04);
+  --color-border-dark: rgba(255, 255, 255, 0.08);
+  --color-border-dark-hover: rgba(216, 195, 154, 0.35);
+  --color-border-jade: rgba(22, 163, 148, 0.3);
+
+  /* Accessible Focus Rings */
+  --ring-focus: 0 0 0 2px var(--color-ink), 0 0 0 4px var(--color-jade);
+  --ring-focus-dark: 0 0 0 2px var(--color-ink), 0 0 0 4px var(--color-champagne);
+
+  /* Typography Stacks */
+  --font-heading: 'Manrope', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: 'Plus Jakarta Sans', 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, Menlo, monospace;
+
+  /* Typography Scale */
+  --font-hero: clamp(2.5rem, 5.5vw + 0.5rem, 4.25rem);
+  --font-h1: clamp(2.1rem, 3.8vw + 0.5rem, 3.25rem);
+  --font-h2: clamp(1.75rem, 2.5vw + 0.5rem, 2.5rem);
+  --font-h3: clamp(1.25rem, 1.4vw + 0.4rem, 1.625rem);
+  --font-h4: clamp(1.05rem, 0.8vw + 0.4rem, 1.25rem);
+  --font-body-lead: clamp(1.05rem, 0.4vw + 0.9rem, 1.2rem);
+  --font-body-base: 0.95rem;
+  --font-small: 0.85rem;
+  --font-xs: 0.75rem;
+
+  /* Architectural Restrained Border Radii */
+  --radius-none: 0;
+  --radius-xs: 3px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* Shadows (Subtle, High Ambient Diffusion) */
+  --shadow-xs: 0 1px 2px rgba(10, 13, 15, 0.04);
+  --shadow-sm: 0 2px 8px rgba(10, 13, 15, 0.05), 0 1px 2px rgba(10, 13, 15, 0.03);
+  --shadow-md: 0 6px 20px -3px rgba(10, 13, 15, 0.07), 0 2px 6px -1px rgba(10, 13, 15, 0.03);
+  --shadow-lg: 0 16px 36px -6px rgba(10, 13, 15, 0.1), 0 4px 12px -2px rgba(10, 13, 15, 0.04);
+  --shadow-dark: 0 20px 48px -10px rgba(0, 0, 0, 0.5);
+  --shadow-jade: 0 8px 24px -4px rgba(22, 163, 148, 0.35);
+
+  /* Structural Dimensions */
+  --header-height: 76px;
+  --header-height-scrolled: 64px;
+  --max-width: 1260px;
+  --max-width-narrow: 840px;
+
+  /* Easing Curves */
+  --transition-fast: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-smooth: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
