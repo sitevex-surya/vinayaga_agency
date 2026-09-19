@@ -77,7 +77,7 @@ _Please confirm stock availability and pricing for delivery._`;
   };
 
   return (
-    <section className="section-padding bg-soft border-bottom-hairline" id="builder">
+    <section className="section-padding bg-warm border-bottom-hairline" id="builder">
       <div className="container">
         
         {/* Section Header */}
@@ -99,7 +99,7 @@ _Please confirm stock availability and pricing for delivery._`;
           
           {/* Left: Input Form */}
           <div className="stock-builder-card">
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--color-text-primary)', marginBottom: '1.5rem' }}>
+            <h3 className="builder-card-title">
               Step 1: Enter Requirement Details
             </h3>
 
@@ -187,7 +187,7 @@ _Please confirm stock availability and pricing for delivery._`;
                 />
               </div>
 
-              <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '1.5rem' }}>
+              <div className="builder-btn-row">
                 <button
                   type="submit"
                   className="btn btn-whatsapp"
@@ -209,7 +209,6 @@ _Please confirm stock availability and pricing for delivery._`;
                   type="button"
                   className="btn btn-secondary"
                   onClick={handleReset}
-                  style={{ color: 'var(--color-text-muted)' }}
                 >
                   Clear
                 </button>
@@ -219,12 +218,12 @@ _Please confirm stock availability and pricing for delivery._`;
 
           {/* Right: Monospace WhatsApp Live Preview */}
           <div className="stock-preview-card">
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '0.75rem', borderBottom: '1px solid var(--color-graphite-border)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div className="preview-header-bar">
+              <div className="preview-title-group">
                 <span className="pulse-dot"></span>
-                <span style={{ fontSize: '0.9rem', fontWeight: 800, color: '#FFFFFF' }}>Live WhatsApp Format</span>
+                <span className="preview-title-text">Live WhatsApp Format</span>
               </div>
-              <span style={{ fontSize: '0.7rem', color: 'var(--color-champagne)', fontFamily: 'var(--font-mono)' }}>
+              <span className="preview-tag-badge">
                 READY TO SEND
               </span>
             </div>
@@ -233,7 +232,7 @@ _Please confirm stock availability and pricing for delivery._`;
               {getFormattedMessage()}
             </pre>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--color-text-inverse-muted)', paddingTop: '0.75rem', borderTop: '1px solid var(--color-graphite-border)' }}>
+            <div className="preview-footer-bar">
               <span>Hotline: {BUSINESS_CONFIG.phoneDisplay}</span>
               <span>Available 10 AM - 9 PM</span>
             </div>

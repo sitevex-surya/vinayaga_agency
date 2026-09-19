@@ -25,6 +25,7 @@ export const BUSINESS_CONFIG = {
 
 export const NAV_LINKS = [
   { href: "#about", label: "About" },
+  { href: "#timeline", label: "History" },
   { href: "#products", label: "Products" },
   { href: "#network", label: "Network" },
   { href: "#process", label: "Process" },

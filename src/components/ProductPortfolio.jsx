@@ -69,11 +69,17 @@ function renderProductIcon(iconType) {
 
 export default function ProductPortfolio({ onSelectProduct }) {
   const [selectedFilter, setSelectedFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const [activeCardId, setActiveCardId] = useState(null);
 
-  const filteredProducts = PRODUCTS_DATA.filter(
-    (item) => selectedFilter === 'all' || item.category === selectedFilter
-  );
+  const filteredProducts = PRODUCTS_DATA.filter((item) => {
+    const matchesCategory = selectedFilter === 'all' || item.category === selectedFilter;
+    const matchesSearch = searchQuery.trim() === '' || 
+      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.badge.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   const handleCardClick = (product) => {
     setActiveCardId(product.id);
@@ -93,76 +99,119 @@ export default function ProductPortfolio({ onSelectProduct }) {
             <span>Comprehensive Medicine Catalog</span>
           </div>
           <h2 className="section-title">
-            Pharmaceutical Portfolio
+            Pharmaceutical Product Explorer
           </h2>
           <p className="section-description">
-            Explore our broad spectrum of verified dosage forms, branded therapeutics, and WHO-GMP quality generic medicines.
+            Explore our broad spectrum of verified dosage forms, branded formulations, and WHO-GMP certified generic medicines.
           </p>
         </div>
 
-        {/* Category Tabs Filter */}
-        <div className="products-category-bar" role="tablist" aria-label="Product categories filter">
-          {PRODUCT_CATEGORIES.map((cat) => {
-            const count = cat.id === 'all' 
-              ? PRODUCTS_DATA.length 
-              : PRODUCTS_DATA.filter(p => p.category === cat.id).length;
-            
-            return (
+        {/* Search & Category Filter Toolbar */}
+        <div className="product-filter-toolbar">
+          
+          {/* Search Input */}
+          <div className="product-search-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input
+              type="text"
+              className="product-search-input"
+              placeholder="Search formulations, dosage forms, molecules..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              aria-label="Search pharmaceutical products"
+            />
+            {searchQuery && (
               <button
-                key={cat.id}
                 type="button"
-                className={`cat-tab-btn ${selectedFilter === cat.id ? 'active' : ''}`}
-                role="tab"
-                aria-selected={selectedFilter === cat.id}
-                onClick={() => setSelectedFilter(cat.id)}
+                className="search-clear-btn"
+                onClick={() => setSearchQuery('')}
+                aria-label="Clear search query"
               >
-                <span>{cat.label}</span>
-                <span style={{ opacity: 0.6, fontSize: '0.75rem', marginLeft: '0.35rem' }}>({count})</span>
+                ✕
               </button>
-            );
-          })}
+            )}
+          </div>
+
+          {/* Category Tabs Filter */}
+          <div className="products-category-bar" role="tablist" aria-label="Product categories filter">
+            {PRODUCT_CATEGORIES.map((cat) => {
+              const count = cat.id === 'all' 
+                ? PRODUCTS_DATA.length 
+                : PRODUCTS_DATA.filter(p => p.category === cat.id).length;
+              
+              return (
+                <button
+                  key={cat.id}
+                  type="button"
+                  className={`cat-tab-btn ${selectedFilter === cat.id ? 'active' : ''}`}
+                  role="tab"
+                  aria-selected={selectedFilter === cat.id}
+                  onClick={() => setSelectedFilter(cat.id)}
+                >
+                  <span>{cat.label}</span>
+                  <span className="cat-tab-count">({count})</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Editorial Product Grid */}
-        <div className="products-editorial-grid">
-          {filteredProducts.map((product) => {
-            const isSelected = activeCardId === product.id;
+        {filteredProducts.length > 0 ? (
+          <div className="products-editorial-grid">
+            {filteredProducts.map((product) => {
+              const isSelected = activeCardId === product.id;
 
-            return (
-              <div
-                key={product.id}
-                className={`product-editorial-card ${isSelected ? 'is-selected' : ''}`}
-                tabIndex={0}
-                role="button"
-                aria-label={`Inquire about ${product.name} stock availability`}
-                onClick={() => handleCardClick(product)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleCardClick(product);
-                  }
-                }}
-              >
-                <div className="product-card-top">
-                  <div className="product-icon-wrap">
-                    {renderProductIcon(product.iconType)}
+              return (
+                <div
+                  key={product.id}
+                  className={`product-editorial-card ${isSelected ? 'is-selected' : ''}`}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`Inquire about ${product.name} stock availability`}
+                  onClick={() => handleCardClick(product)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleCardClick(product);
+                    }
+                  }}
+                >
+                  <div className="product-card-top">
+                    <div className="product-icon-wrap">
+                      {renderProductIcon(product.iconType)}
+                    </div>
+                    <span className="product-badge-editorial">{product.badge}</span>
                   </div>
-                  <span className="product-badge-editorial">{product.badge}</span>
-                </div>
 
-                <div>
-                  <h3 className="product-name-editorial">{product.name}</h3>
-                  <p className="product-desc-editorial">{product.description}</p>
-                </div>
+                  <div>
+                    <h3 className="product-name-editorial">{product.name}</h3>
+                    <p className="product-desc-editorial">{product.description}</p>
+                  </div>
 
-                <div className="product-action-link">
-                  <span>Enquire Stock Availability</span>
-                  <span>↗</span>
+                  <div className="product-action-link">
+                    <span>Enquire Stock Availability</span>
+                    <span className="btn-arrow">↗</span>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="no-products-found">
+            <p>No pharmaceutical categories match your query "{searchQuery}".</p>
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              onClick={() => { setSearchQuery(''); setSelectedFilter('all'); }}
+            >
+              Reset Filters
+            </button>
+          </div>
+        )}
 
         {/* Category Footer Banner */}
         <div className="product-cta-banner-editorial">

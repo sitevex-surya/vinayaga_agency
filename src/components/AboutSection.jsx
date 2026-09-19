@@ -1,5 +1,5 @@
 import React from 'react';
-import { TIMELINE_DATA, BUSINESS_CONFIG } from '../data/siteData';
+import { BUSINESS_CONFIG } from '../data/siteData';
 
 export default function AboutSection() {
   return (
@@ -17,13 +17,13 @@ export default function AboutSection() {
           </h2>
         </div>
 
-        {/* Asymmetrical Content Grid */}
+        {/* Asymmetrical Editorial Grid */}
         <div className="about-asymmetric-grid">
           
           {/* Left Column: Narrative Story */}
           <div className="about-story-text">
             <p>
-              With over five decades of continuous service, <strong>{BUSINESS_CONFIG.name}</strong> stands as a trusted pillar in wholesale pharmaceutical distribution throughout Ramanathapuram District, Paramakudi, and adjacent healthcare corridors.
+              With over five decades of continuous service, <strong>{BUSINESS_CONFIG.name}</strong> stands as an established pillar in wholesale pharmaceutical distribution throughout Ramanathapuram District, Paramakudi, and adjacent healthcare supply corridors.
             </p>
 
             <div className="about-highlight-statement">
@@ -31,56 +31,73 @@ export default function AboutSection() {
             </div>
 
             <p>
-              We specialize in wholesale supply for retail pharmacies, nursing homes, and hospital dispensaries. Our disciplined inventory management guarantees that high-demand therapeutics and critical medicines are readily available when patients and healthcare providers need them most.
+              We specialize in wholesale medicine distribution for independent retail pharmacies, nursing homes, and clinical dispensaries. Our disciplined inventory management guarantees that high-demand therapeutics and critical medicines are readily available when patients and healthcare providers need them most.
             </p>
 
             <p>
               Backed by our dedicated logistics team, knowledgeable order dispatch personnel, and regular scheduled delivery routes, we continue to streamline regional healthcare distribution with absolute integrity.
             </p>
 
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '1.25rem' }}>
               <a href="#products" className="btn btn-dark">
                 <span>View Product Portfolio</span>
                 <span className="btn-arrow">↗</span>
               </a>
-              <a href="#network" className="btn btn-secondary">
-                <span>Delivery Coverage</span>
+              <a href="#timeline" className="btn btn-secondary">
+                <span>Explore 50+ Year History</span>
               </a>
             </div>
           </div>
 
-          {/* Right Column: 50+ Years Editorial Timeline */}
-          <div className="timeline-editorial-panel">
-            <div className="timeline-editorial-header">
-              <div>
-                <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--color-text-primary)' }}>
-                  Our 50+ Year Evolution
-                </h3>
-                <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
-                  Historical Milestones (1970s – 2026)
-                </span>
+          {/* Right Column: Operational Pillars & Heritage Metric */}
+          <div className="about-pillars-column">
+            
+            {/* 50+ Years Heritage Callout Box */}
+            <div className="about-metric-card">
+              <div className="metric-badge-top">
+                <span className="pulse-dot"></span>
+                <span>Established 1970s</span>
               </div>
-              <span className="status-pill status-pill-champagne">
-                Heritage
-              </span>
+              <div className="metric-large-number">50+</div>
+              <div className="metric-large-label">Years of Unbroken Regional Trust</div>
+              <p className="metric-large-sub">
+                Trusted by retail pharmacists and dispensaries across Paramakudi, Sathrakudi, Rameswaram, Mudukulathur, and Abiramam.
+              </p>
             </div>
 
-            <div className="timeline-items-list">
-              {TIMELINE_DATA.map((item) => (
-                <div
-                  key={item.period}
-                  className={`timeline-node-item ${item.isCurrent ? 'is-current' : ''}`}
-                >
-                  <div className="timeline-year-badge">
-                    {item.period}
-                  </div>
-                  <div className="timeline-node-content">
-                    <div className="timeline-node-title">{item.title}</div>
-                    <div className="timeline-node-desc">{item.description}</div>
-                  </div>
+            {/* Core Pillars List */}
+            <div className="about-pillars-list">
+              <div className="about-pillar-item">
+                <div className="pillar-bullet">✦</div>
+                <div>
+                  <h4 className="pillar-title">Verified Medicine Authenticity</h4>
+                  <p className="pillar-desc">
+                    Direct manufacturer sourcing guaranteeing batch validity, tamper-evident seals, and WHO-GMP compliance.
+                  </p>
                 </div>
-              ))}
+              </div>
+
+              <div className="about-pillar-item">
+                <div className="pillar-bullet">✦</div>
+                <div>
+                  <h4 className="pillar-title">Scheduled Delivery Logistics</h4>
+                  <p className="pillar-desc">
+                    Dedicated weekly delivery van routes and daily hub dispatch ensuring prompt restocking without delays.
+                  </p>
+                </div>
+              </div>
+
+              <div className="about-pillar-item">
+                <div className="pillar-bullet">✦</div>
+                <div>
+                  <h4 className="pillar-title">Direct WhatsApp Order Desk</h4>
+                  <p className="pillar-desc">
+                    Fast order confirmation, inventory stock checks, and rapid dispatch coordination with our wholesale team.
+                  </p>
+                </div>
+              </div>
             </div>
+
           </div>
 
         </div>

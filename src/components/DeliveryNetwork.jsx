@@ -27,7 +27,7 @@ export default function DeliveryNetwork({ onNotify }) {
             <span>Regional Distribution Strength</span>
           </div>
           <h2 className="section-title">
-            Our Distribution Network
+            Our Regional Distribution Network
           </h2>
           <p className="section-description">
             Dedicated weekly delivery vans and express bus parcel supply covering retail and hospital pharmacies across Ramanathapuram District.
@@ -36,23 +36,14 @@ export default function DeliveryNetwork({ onNotify }) {
 
         {/* Network Interactive Panel */}
         <div className="network-interactive-panel">
-          <div style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '1.25rem',
-            marginBottom: '1.5rem',
-            paddingBottom: '1.25rem',
-            borderBottom: '1px solid var(--color-graphite-border)'
-          }}>
+          <div className="network-panel-header">
             <div>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#FFFFFF', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <h3 className="network-panel-title">
                 <span className="pulse-dot"></span>
-                Select Delivery Town / Corridor
+                <span>Select Delivery Town / Transit Corridor</span>
               </h3>
-              <p style={{ fontSize: '0.8125rem', color: 'var(--color-text-inverse-muted)', margin: 0 }}>
-                Click a town to inspect weekly van schedules, departure points, and route coverage.
+              <p className="network-panel-sub">
+                Click a destination town to inspect weekly van schedules, departure points, and route transit coverage.
               </p>
             </div>
 
@@ -67,8 +58,8 @@ export default function DeliveryNetwork({ onNotify }) {
             )}
           </div>
 
-          {/* Quick Town Tags */}
-          <div className="towns-selector-bar">
+          {/* Interactive Town Selector Buttons */}
+          <div className="towns-selector-bar" role="group" aria-label="Town route filters">
             {TOWNS_DATA.map((town) => {
               const isSelected = selectedRouteKey === town.routeKey;
               return (
@@ -79,32 +70,84 @@ export default function DeliveryNetwork({ onNotify }) {
                   onClick={() => handleSelectTown(town.routeKey)}
                   aria-pressed={isSelected}
                 >
-                  <span>{town.name}</span>
+                  <span className="town-pill-dot"></span>
+                  <span className="town-name">{town.name}</span>
                   <span className="town-schedule-pill">{town.schedule}</span>
                 </button>
               );
             })}
           </div>
 
+          {/* Visual Route Corridor Map Bar */}
+          <div className="network-route-visualizer">
+            <div className="route-visualizer-header">
+              <span className="visualizer-hub-label">
+                <span className="hub-beacon"></span>
+                CENTRAL HUB: PARAMAKUDI
+              </span>
+              <span className="visualizer-status">
+                WEEKLY VAN LOGISTICS & BUS PARCEL
+              </span>
+            </div>
+
+            <div className="route-corridors-diagram">
+              <div className="corridor-node is-hub">
+                <div className="node-circle"></div>
+                <div className="node-title">Paramakudi</div>
+                <div className="node-sub">Daily Hub</div>
+              </div>
+
+              <div className="corridor-connector">
+                <div className="connector-line"></div>
+                <div className="delivery-signal-particle"></div>
+              </div>
+
+              <div className="corridor-node">
+                <div className="node-circle"></div>
+                <div className="node-title">Sathrakudi</div>
+                <div className="node-sub">Thu Route</div>
+              </div>
+
+              <div className="corridor-connector">
+                <div className="connector-line"></div>
+              </div>
+
+              <div className="corridor-node">
+                <div className="node-circle"></div>
+                <div className="node-title">Rameswaram</div>
+                <div className="node-sub">Thu Coastal</div>
+              </div>
+
+              <div className="corridor-connector">
+                <div className="connector-line"></div>
+              </div>
+
+              <div className="corridor-node">
+                <div className="node-circle"></div>
+                <div className="node-title">Mudukulathur</div>
+                <div className="node-sub">Fri Route</div>
+              </div>
+
+              <div className="corridor-connector">
+                <div className="connector-line"></div>
+              </div>
+
+              <div className="corridor-node">
+                <div className="node-circle"></div>
+                <div className="node-title">Abiramam</div>
+                <div className="node-sub">Fri Central</div>
+              </div>
+            </div>
+          </div>
+
           {/* Active Filter Callout */}
           {activeRoute && (
-            <div style={{
-              marginTop: '1.5rem',
-              padding: '1.25rem 1.5rem',
-              borderRadius: 'var(--radius-xs)',
-              backgroundColor: 'rgba(22, 163, 148, 0.12)',
-              borderLeft: '3px solid var(--color-jade)',
-              display: 'flex',
-              flexWrap: 'wrap',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: '1rem'
-            }}>
+            <div className="active-route-callout">
               <div>
-                <strong style={{ color: '#FFFFFF', fontSize: '0.95rem' }}>
+                <strong className="callout-title">
                   {activeRoute.title} ({activeRoute.frequency}):
                 </strong>{' '}
-                <span style={{ color: 'var(--color-text-inverse-muted)', fontSize: '0.875rem' }}>
+                <span className="callout-desc">
                   {activeRoute.coverage}
                 </span>
               </div>
@@ -115,7 +158,8 @@ export default function DeliveryNetwork({ onNotify }) {
                 className="btn btn-whatsapp btn-sm"
                 onClick={() => onNotify && onNotify(`Opening WhatsApp for ${activeRoute.title}`)}
               >
-                Book Route Order
+                <span>Book Route Order</span>
+                <span className="btn-arrow">↗</span>
               </a>
             </div>
           )}
@@ -141,7 +185,7 @@ export default function DeliveryNetwork({ onNotify }) {
                     }`}>
                       {item.badge}
                     </span>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--color-text-light)', fontFamily: 'var(--font-mono)' }}>
+                    <span className="route-card-index">
                       0{item.cardIndex + 1}
                     </span>
                   </div>
@@ -158,10 +202,10 @@ export default function DeliveryNetwork({ onNotify }) {
 
                   <div className="route-path-box">
                     <div className="route-path-title">Transit Corridor:</div>
-                    <div>{item.route}</div>
+                    <div className="route-path-name">{item.route}</div>
                   </div>
 
-                  <p style={{ fontSize: '0.8125rem', color: 'var(--color-text-inverse-muted)', lineHeight: 1.55, marginBottom: '1.5rem' }}>
+                  <p className="route-coverage-desc">
                     {item.coverage}
                   </p>
                 </div>
@@ -174,7 +218,8 @@ export default function DeliveryNetwork({ onNotify }) {
                   style={{ width: '100%', justifyContent: 'center' }}
                   onClick={() => onNotify && onNotify(`Opening WhatsApp for ${item.title}`)}
                 >
-                  Inquire Route Dispatch
+                  <span>Inquire Route Dispatch</span>
+                  <span className="btn-arrow">↗</span>
                 </a>
               </div>
             );

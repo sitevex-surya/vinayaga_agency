@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import StatsSection from './components/StatsSection';
 import AboutSection from './components/AboutSection';
+import TimelineSection from './components/TimelineSection';
 import ValueProps from './components/ValueProps';
 import ProductPortfolio from './components/ProductPortfolio';
 import DeliveryNetwork from './components/DeliveryNetwork';
@@ -55,11 +56,12 @@ export default function App() {
       {/* Header Navigation */}
       <Navbar />
 
-      {/* Main Content Sections */}
+      {/* Main Content Sections with Deliberate 2026 Visual Rhythm */}
       <main id="main-content">
         <Hero onNotify={handleNotify} />
         <StatsSection />
         <AboutSection />
+        <TimelineSection />
         <ValueProps />
         <ProductPortfolio onSelectProduct={handleProductInquiry} />
         <DeliveryNetwork onNotify={handleNotify} />
